@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var dbHost = 'mongodb://localhost:27017/Books';
-mongoose.connect(dbHost, { useNewUrlParser: true } );
+mongoose.connect(dbHost, { useUnifiedTopology: true } );
 mongoose.connection;
 mongoose.set('debug', true);
 var bookSchema = mongoose.Schema( {
