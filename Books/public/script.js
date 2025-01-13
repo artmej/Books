@@ -1,42 +1,53 @@
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
-    var getData = function() {
-        return $http( {
-            method: 'GET',
-            url: '/book'
-        }).then(function successCallback(response) {
+    var getData = async function() {
+        try {
+            const response = await $http({
+                method: 'GET',
+                url: '/book'
+            });
             $scope.books = response.data;
-        }, function errorCallback(response) {
+            $scope.$apply();
+
+        } catch (response) {
             console.log('Error: ' + response);
-        });
+        }
     };
     getData();
-    $scope.del_book = function(book) {
-        $http( {
-            method: 'DELETE',
-            url: '/book/:isbn',
-            params: {'isbn': book.isbn}
-        }).then(function successCallback(response) {
+
+    $scope.del_book = async function(book) {
+        try {
+            const response = await $http({
+                method: 'DELETE',
+                url: `/book/${book.isbn}`
+            });
             console.log(response);
-            return getData();
-        }, function errorCallback(response) {
+            await getData();
+            $scope.$apply();
+        } catch (response) {
             console.log('Error: ' + response);
-        });
+        }
     };
-    $scope.add_book = function() {
-        var body = '{ "name": "' + $scope.Name +
-        '", "isbn": "' + $scope.Isbn +
-        '", "author": "' + $scope.Author +
-        '", "pages": "' + $scope.Pages + '" }';
-        $http({
-            method: 'POST',
-            url: '/book',
-            data: body
-        }).then(function successCallback(response) {
-            console.log(response);
-            return getData();
-        }, function errorCallback(response) {
-            console.log('Error: ' + response);
+
+    $scope.add_book = async function() {
+        var body = JSON.stringify({
+            name: $scope.Name,
+            isbn: $scope.Isbn,
+            author: $scope.Author,
+            pages: $scope.Pages
         });
+
+        try {
+            const response = await $http({
+                method: 'POST',
+                url: '/book',
+                data: body
+            });
+            console.log(response);
+            await getData();
+            $scope.$apply();
+        } catch (response) {
+            console.log('Error: ' + response);
+        }
     };
 });
