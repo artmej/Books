@@ -52,3 +52,4 @@ var routes = function(app) {
                 res.sendFile(path.join(__dirname + '/public', 'index.html'));
             });
         };
+module.exports = routes;
